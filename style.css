@@ -1,0 +1,84 @@
+.navbar ul{
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    background-color: #2a2a2a;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+}
+
+.navbar a:link {
+    color: white;
+    text-decoration: none;
+}
+
+.navbar p{
+    color: #FFFFFF;
+    text-align: center;
+    text-decoration: none;
+    font-size: 15px;
+}
+.navbar a{color: #2A2A2A;
+    color: white;
+    text-decoration: none;
+    padding: 20px;
+    display: block;
+    text-align: center;
+}
+
+.navbar a:hover{
+    background-color: #1a1a1a;
+    color:  #B9DC0C;
+}
+
+.navbar li{
+    float: none;
+}
+
+
+
+.footermetlogo{
+    width:100px;
+    position: center;
+    bottom: 0px;
+    right: 0px;
+    padding: 0px;
+}
+
+
+.headermetlogo{
+    height:50px;
+    position: center;
+    bottom: 0px;
+    right: 0px;
+    padding: 0px;
+}
+
+.linkedinlogo{
+    width:20px;
+    vertical-align: auto;
+    padding: 2px;
+}
+
+.githublogo{
+    width:20px;
+    vertical-align: auto;
+    padding: 2px;
+}
+
+a:link {
+    color: #007AA9;
+    background-color: transparent;
+    text-decoration: underline;
+}
+
+
+/*
+Core Green = {color: '#B9DC0C';}
+Core black = {color: '#2A2A2A';}
+Spring Green = {color: '#50B9A4';}
+Summer Blue = {color: '#007AA9';}
+Autumn Orange = {color: '#E47452';}
+Winter Grey = {color: '#A1A0AA';}
+*/
