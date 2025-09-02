@@ -9,6 +9,6 @@ to get to know me and if they have any questions regrading the work I am doing
 but I am out of office, then this website is the go to place to get any 
 information they need.
 
-### Testing latex
-
-$\sigma^0$
+Any more information that is not on my website, or if you have any feedback, 
+please let me know via [liam.hall@metoffice.gov.uk](email) or via Teams and I 
+will be more than happy to answer any questions you have.
