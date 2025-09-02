@@ -11,4 +11,4 @@ information they need.
 
 ### Testing latex
 
-$\signma^0$
+$\sigma^0$
