@@ -10,5 +10,5 @@ but I am out of office, then this website is the go to place to get any
 information they need.
 
 Any more information that is not on my website, or if you have any feedback, 
-please let me know via [liam.hall@metoffice.gov.uk](email) or via Teams and I 
-will be more than happy to answer any questions you have.
+please let me know via [email](mailto:liam.hall@metoffice.gov.uk) or via Teams 
+and I will be more than happy to answer any questions you have.
