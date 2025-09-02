@@ -10,5 +10,6 @@ but I am out of office, then this website is the go to place to get any
 information they need.
 
 Any more information that is not on my website, or if you have any feedback, 
-please let me know via [email](mailto:liam.hall@metoffice.gov.uk) or via Teams 
+please let me know via [email](mailto:liam.hall@metoffice.gov.uk?subject=Internal%20Website%20Query) 
+or via [Teams](https://teams.microsoft.com/l/chat/48:notes/conversations?context=%7B%22contextType%22%3A%22chat%22%7D) 
 and I will be more than happy to answer any questions you have.
