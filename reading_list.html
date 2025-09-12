@@ -58,16 +58,16 @@
     </nav>
 
     <div class="content">
-      <h1>Papers and Articles</h1>
-      <p>This is a collection of papers and articles that I have found particularly useful and interesting in the field of radio occultation assimilation and the odd paper I've read in my personal time.</p>
-      <div class="table">
-      <table>
-          <tr>
-              <th>Title</th>
-              <th>Author</th>
-              <th>Date</th>
-              <th>DOI</th>
-          </tr>
+    <h1>Papers and Articles</h1>
+    <p>This is a collection of papers and articles that I have found particularly useful and interesting in the field of radio occultation assimilation and the odd paper I've read in my personal time.</p>
+    <div class="table">
+    <table>
+      <tr>
+              <th>Title <span class="sort-icon" data-col="0" title="Sort"></span></th>
+              <th>Author <span class="sort-icon" data-col="1" title="Sort"></span></th>
+              <th>Date <span class="sort-icon" data-col="2" title="Sort"></span></th>
+              <th>DOI <span class="sort-icon" data-col="3" title="Sort"></span></th>
+      </tr>
           <tr>
             <td>Redox-driven mineral and organic associations in Jezero Crater, Mars</td>
             <td>Hurowitz J. et al</td>
@@ -136,10 +136,10 @@
         <div class="table">
           <table>
             <tr>
-              <th>Date</th>
-              <th>Book</th>
-              <th>Author</th>
-              <th>ISBN</th>
+              <th>Date <span class="sort-icon" data-col="0" title="Sort"></span></th>
+              <th>Book <span class="sort-icon" data-col="1" title="Sort"></span></th>
+              <th>Author <span class="sort-icon" data-col="2" title="Sort"></span></th>
+              <th>ISBN <span class="sort-icon" data-col="3" title="Sort"></span></th>
             </tr>
             <tr>
               <td>Present</td>
@@ -160,9 +160,9 @@
         <div class="table">
           <table>
             <tr>
-              <th>Book</th>
-              <th>Author</th>
-              <th>ISBN</th>
+              <th>Book <span class="sort-icon" data-col="0" title="Sort"></span></th>
+              <th>Author <span class="sort-icon" data-col="1" title="Sort"></span></th>
+              <th>ISBN <span class="sort-icon" data-col="2" title="Sort"></span></th>
             </tr>
             <tr>
               <td>Nuclear War: A Scenario</td>
@@ -184,9 +184,52 @@
       </div>
     </div>
   
+    <script>
+    // Table sorting for all tables using icon only
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.sort-icon').forEach(function(icon) {
+        icon.textContent = '↕';
+        icon.style.cursor = 'pointer';
+        icon.addEventListener('click', function(e) {
+          const th = icon.parentElement;
+          const table = th.closest('table');
+          const col = parseInt(icon.getAttribute('data-col'));
+          const tbody = table.tBodies[0] || table;
+          const rows = Array.from(tbody.rows).slice(1); // skip header
+          let asc = icon.dataset.asc === 'true' ? false : true;
+          // Remove sort icons from all headers in this table
+          table.querySelectorAll('.sort-icon').forEach(i => {
+            i.textContent = '↕';
+            i.removeAttribute('data-asc');
+          });
+          // Set icon for this header
+          icon.textContent = asc ? '↑' : '↓';
+          icon.dataset.asc = asc;
+          rows.sort((a, b) => {
+            let vA = a.cells[col].innerText.trim();
+            let vB = b.cells[col].innerText.trim();
+            // Try to parse as date or number, fallback to string
+            let nA = Date.parse(vA);
+            let nB = Date.parse(vB);
+            if (!isNaN(nA) && !isNaN(nB)) {
+              vA = nA; vB = nB;
+            } else if (!isNaN(parseFloat(vA)) && !isNaN(parseFloat(vB))) {
+              vA = parseFloat(vA); vB = parseFloat(vB);
+            }
+            if (vA < vB) return asc ? -1 : 1;
+            if (vA > vB) return asc ? 1 : -1;
+            return 0;
+          });
+          // Re-append sorted rows
+          rows.forEach(row => tbody.appendChild(row));
+        });
+      });
+    });
+    </script>
+    
     <footer>
       <div class="footer-section left">
-        Last Modified: 09/09/2025
+        Last Modified: 12/09/2025
       </div>
       <div class="footer-section">
         <a href="http://www.metoffice.gov.uk" target="_blank" alt="Met Office Logo" title="Met Office"><img src="images/logos/metofficegovuk_md.png" class='footermetlogo'></a>
