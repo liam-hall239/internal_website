@@ -73,8 +73,9 @@
     </ul>
 
     <h2>Background information</h2>
+    <h3>Work <a href="notes.html">Notes</a> for GNSS-RO</h3>
     <ul>
-      <li>GNNS RO basics - ECMWF/EUMETSAT Satellite training course [Lonitz, K. <a href="https://events.ecmwf.int/event/334/contributions/3890/attachments/2235/3952/01_gpsro_lecture_KL_2023.pdf " target="_blank" title="EUMETSAT (Opens in a new window)">2023</a>]</li>
+      <li>GNSS RO basics - ECMWF/EUMETSAT Satellite training course [Lonitz, K. <a href="https://events.ecmwf.int/event/334/contributions/3890/attachments/2235/3952/01_gpsro_lecture_KL_2023.pdf " target="_blank" title="EUMETSAT (Opens in a new window)">2023</a>]</li>
       <ul>
         <li>GNSS RO is an active remote sensing technique that uses radio transmissions from GNSS satellites to retrieve certain properties.</li>
         <li> These consist of temperature, pressure and water vapour content in the stratosphere and electron density in the ionosphere due to the refractivity of the signal passing through the Earth's atmosphere to a receiving LEO polar satellite.</li>
@@ -110,17 +111,34 @@
       <p><a href="https://github.com/liamhall64" target="_blank" alt="GitHub Logo" style="vertical-align: middle;" title="Personal GitHub"><img src="images/logos/github.png" class='githublogo'></a> <a href="https://github.com/liamhall64" target="_blank" style="vertical-align: middle;">GitHub (Personal)</a></p>
   </div>
 
-    <footer>
-        <div class="footer-section left">
-            Last Modified: 22/09/2025
-        </div>
-        <div class="footer-section">
-            <a href="http://www.metoffice.gov.uk" target="_blank" alt="Met Office Logo" title="Met Office"><img src="images/logos/metofficegovuk_md.png" class='footermetlogo'></a>
-        </div>
-        <div class="footer-section right">
-            © Crown Copyright <script>document.write(new Date().getFullYear())</script>. Met Office.
-        </div>
-    </footer>
+  
+  <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">&#8679;</button>
+  <script>
+  window.onscroll = function() {scrollFunction()};
+  function scrollFunction() {
+    var btn = document.getElementById("scrollTopBtn");
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+      btn.style.display = "block";
+    } else {
+      btn.style.display = "none";
+    }
+  }
+  function scrollToTop() {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+  </script>
+
+  <footer>
+      <div class="footer-section left">
+          Last Modified: 22/09/2025
+      </div>
+      <div class="footer-section">
+          <a href="http://www.metoffice.gov.uk" target="_blank" alt="Met Office Logo" title="Met Office"><img src="images/logos/metofficegovuk_md.png" class='footermetlogo'></a>
+      </div>
+      <div class="footer-section right">
+          © Crown Copyright <script>document.write(new Date().getFullYear())</script>. Met Office.
+      </div>
+  </footer>
 
   </body>
   </html>
