@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html >
+    <head>
+        <title>NWP Profile for Liam Hall</title>
+        <link rel="icon" href="images/logos/mo-favicon.png" type="image/x-icon" sizes="any">
+        <meta name="description" content="Personal home page example for Liam Hall" />
+        <meta name="keywords" content="Liam Hall, home page" />
+        <link rel="stylesheet" href="style.css" type="text/css" />
+        <style>
+          code {
+            font-family: Consolas,"courier new";
+            background-color: #e7e7e7;
+            border-radius: 5px;
+          }
+          pre {
+            font-family: Consolas,"courier new";
+            background-color: #e7e7e7;
+            border-radius: 5px;
+          }
+        </style>
+    </head>
+  <body>
+  
+  <div class="header">
+    <a href="http://www.metoffice.gov.uk" target="_blank" alt="Met Office Logo" title="Met Office"><img src="images/logos/metofficegovuk_md.png" class='headermetlogo'></a>
+    <h1>Liam Hall</h1>
+  </div>
+  
+  <nav class="navbar">
+    <ul>
+      <li><a href="https://wwwspice/~liam.hall/"><img src="images/icons/home-icon.png" width="20px"></a></li>
+      <li><a href="https://metoffice.sharepoint.com/sites/scienceweathercommunicationssite2" target="_blank">Weather Science</a></li>
+      <li><a href="https://metoffice.sharepoint.com/sites/scienceweathersateam/SitePages/Home.aspx" target="_blank">Satellite and Surface Assimilation</a></li>
+      <li><a href="https://wwwspice/~SWAS/home.html" target="_blank" title="Satellite Winds and Active Sensing">SWAS</a></li>
+      <li><a href="https://www.github.com/MetOffice/ssa-desroziers-2025" target="_blank">Desroziers</a></li>
+      <li><a href="https://wwwspice/~liam.hall/GES.html">Global Evaluation Suites</a></li>
+      <li><a href="https://wwwspice/~liam.hall/reading_list.html">Reading List</a></li>
+      <li><a href="https://wwwspice/~liam.hall/hobbies.html">Hobbies</a></li>
+    </ul>
+  </nav>
+
+  <div class="content" style="margin-left: 100px; margin-right: 100px;">
+    <h1>Notes</h1>
+    <p>This page is for my work notes that I want to keep track of for my own benefit. It is not official documentation for others to use and reference since they are very specific to my work, but if it helps, it can be used if you need them.</p>
+    
+    <div>
+      <h2>Desroziers SITH Suite</h2>
+      <p>SITH (Simple Integrated Test Harness for JEDI Applications) is a suite that compares OPS with JOPA. It can be run on a cycling basis which for my case is run monthly.</p>
+      <p>Assimilating GNSS-RO data allows us to retrieve the innovations (observations minus background, O-B) and residuals (observations minus analysis,O-A) to be able to estimate the statistical error on the background for these observations. See the <a href="https://github.com/metoffice/ssa-desroziers-2025">ssa-desroziers-2025</a> repository and Desroziers (<a href="https://rmets.onlinelibrary.wiley.com/doi/10.1256/qj.05.108">2005</a>) for more information.</p>
+      <p>This is the purpose for these suite changes - to be able to assimilate and plot these error statistics against altitude.</p>
+      <p>Cloned the SITH repository using <code>git clone https://github.com/MetOffice/sith.git</code> and <code>cd</code> into it.</p>
+      <p>Branched off to <code>git checkout -b feature/desroziers</code></p>
+      <p>Made edits in <code>rose-suite.conf</code></p>
+      <ul>
+        <li>Changed <code>END_CYCLE</code></li>
+        <li><code>OBS_TYPE_gpsro=true</code></li>
+        <li><code>OBS_TYPE_groundgps=false</code></li>
+        <li><code>RUN_COMPARE=false</code></li>
+        <li><code>RUN_OPS=true</code></li>
+        <li><code>RUN_VAR=true</code></li>
+        <li><code>SINGLE_CYCLE=false</code></li>
+        <li>Commented out <code>USE_PR_BUILD_GROUP=true</code></li>
+        <li>Changed <code>START_CYCLE</code></li>
+      </ul>
+      <p>Made more edits in <code>app/gl_var_anal_low/rose-app.conf</code></p>
+      <ul>
+        <li>Added <code>VAR_INNOV_FILE=$ROSE_DATAC/{ROSE_TASK_PREFIX}_var_low_innov</code></li>
+        <li>Similarly for residuals: <code>VAR_resid_FILE=$ROSE_DATAC/${ROSE_TASK_PREFIX}_var_low_resid</code></li>
+        <li><code>VAR_OUTPUT_RESANDINNOV=$VAR_OUTPUT_RESANDINNOV</code></li>
+        <li><code>saveinnovresid=.true</code></li>
+      </ul>
+
+      <h3>Building VAR</h3>
+      <p>In order to split the observations into their respective rising and setting phases, I needed to modify the configuration files to be able to produce values in the <code>zchar</code> column.</p>
+      <p>Cloned the VAR repository using <code>svn checkout https://code.metoffice.gov.uk/svn/var/main/trunk@8534 r8534_desroziers_var</code> in my <code>$DATADIR</code>.</p>
+      <p>Changed the file <code>src/code/VarMods_ObsIO/Var_WriteObsSensNRL.f90</code> to retrieve the last digit of the callsign as this is either a 1 or a 0 flag depending on whether it is rising or setting respectively.</p>
+      <ul>
+        <li><code>144: INTEGER, ALLOCATABLE :: ris_set(:)</code></li>
+        <li><code>172: 1x,i1</code> added to the end of the Fmt1 string</li>
+        <li><code>1988: READ(Observations % CallSign(:)(16:16),'(I1.0)') ris_set(:)</code></li>
+        <li><code>2095: ris_set</code> to the end of the list of variables</li>
+        <li>Finally to compile the changes, I ran - <br><code>rose stem --no-run-name --task=fcm_make:var_ex_milan_cce_opt --define-suite=HOST='"exab"' && cylc play $(basename $PWD)</code></li>
+        <li>Once VAR has compiled, I pointed the <code>rose-suite.conf</code> to the new VAR directory - <br><code>VAR_BUILD_DIR_EX="/home/users/liam.hall/cylc-run/r8534_desroziers_var/share/fcm_make_var_ex_milan_cce_opt/build/bin"</code></li>
+        <li>Ran the new suite using <code>rose vip -n sith_gnsso_202501_new_var</code><br>or to change the name of the suite run by running <code>cylc vip --run-name=new_name workflow_name</code></li>
+      </ul>
+      <p>We spotted a bug in <code>opsinputs</code> line 72 where the string format should be 6 characters long, not 7. This cuts off the callsign which tells us the information whether the occultation is either rising or setting and then we will be able to graph rising and setting observations.</p>
+      <p>To fix this, I cloned <code>mo-bundle</code> and made the necessary changes in <code>opsinputs</code>.</p>
+      <p>From <code>line 60</code>:</p>
+      <pre>
+      std::vector &lt;int&gt; isRising(nlocs, 2);
+      for (size_t i=0; i < nlocs; ++i) {
+        if ((qualityFlags[i] & (1 << 13)) != 0) {
+          isRising[i] = 1;
+        } else if ((qualityFlags[i] & (1 << 13)) == 0) {
+          isRising[i] = 0;
+        }
+        else {
+          isRising[i] = 2;
+        }
+      }</pre>
+      <p>and on <code>line 86</code>:</p>
+      <code>stringFormat(jobs, 6) + <br> stringFormat(isRising[jobs], 1);</code>
+      <p>Testing these changes by running <code>cylc vip -n mo-bundle_desroziers --no-run-name -z TASKS=make_mo:exab_gnu</code></p>
+      <p>Then going back to the suite:</p>
+      <ul>
+        <li>Edited <code>JEDI_BUILD="/home/users/liam.hall/cylc-run/mo-bundle_desroziers"</code></li>
+        <li>Ran the suite using <code>rose vip --run-name=new_build ol_cycling_change</code></li>
+      </ul>
+      <p>I checked the output for errors and as soon as the task <code>glu_jopa_process_background_gpsro</code> had ran successfully, I verified that the changes I made in VAR and mo-bundle had worked:</p>
+      <p>Copied the GPSRO.varobs file from the HPC to SPICE</p>
+      <p>Writing <code>PATH=$PATH:/home/users/opsrc/cylc-run/ops-2025.03.0/share/fcm_make_ops_x86_64_ifort_opt//build/bin</code></p>
+      <p>then <code>print-varobs --all GPSRO.varobs > varobs.txt</code> both within SPICE. Scrolled through the text file and successfully saw the rising and setting flag in the CallSign.</p>
+      <p>When the task <code>glu_var_jopa_anal_low</code> ran successfully, I checked the innovations and residuals on the HPC to see if the column of 1s and 0s were there and success!</p>
+    </div>
+  </div>
+
+
+    <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">&#8679;</button>
+    <script>
+    // Shows the button when scrolled down 100px
+    window.onscroll = function() {scrollFunction()};
+    function scrollFunction() {
+      var btn = document.getElementById("scrollTopBtn");
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        btn.style.display = "block";
+      } else {
+        btn.style.display = "none";
+      }
+    }
+    function scrollToTop() {
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+    </script>
+
+  <footer>
+        <div class="footer-section left">
+        Last Modified: 22/09/2025
+      </div>
+        <div class="footer-section">
+            <a href="http://www.metoffice.gov.uk" target="_blank" alt="Met Office Logo" title="Met Office"><img src="images/logos/metofficegovuk_md.png" class='footermetlogo'></a>
+        </div>
+        <div class="footer-section right">
+            © Crown Copyright <script>document.write(new Date().getFullYear())</script>. Met Office.
+        </div>
+    </footer>
+  </body>
+  </html>
