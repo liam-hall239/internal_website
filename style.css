@@ -88,6 +88,27 @@ img.profile_pic {
     border-radius: 20px
 }
 
+#scrollTopBtn {
+    display: none;
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    font-size: 24px;
+    border: none;
+    outline: none;
+    background-color: #333;
+    color: #B9DC0C;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 5px 13px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: background 0.3s;
+}
+#scrollTopBtn:hover {
+    background-color: #B9DC0C;
+    color: #333;
+}
+
 /* Navbar */
 .navbar ul{
     list-style-type: none;
