@@ -33,10 +33,24 @@
     <h4>It seems like you've stumbled upon a page that doesn't exist. Please check the URL or return to the <a href="https://wwwspice/~liam.hall/">home page</a>.</h4>
   </div>
 
-  <!--Footer-->
+    <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">&#8679;</button>
+    <script>
+    window.onscroll = function() {scrollFunction()};
+    function scrollFunction() {
+      var btn = document.getElementById("scrollTopBtn");
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        btn.style.display = "block";
+      } else {
+        btn.style.display = "none";
+      }
+    }
+    function scrollToTop() {
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+    </script>
     <footer>
         <div class="footer-section left">
-        Last Modified: 19/09/2025
+        Last Modified: 22/09/2025
       </div>
         <div class="footer-section">
             <a href="http://www.metoffice.gov.uk" target="_blank" alt="Met Office Logo" title="Met Office"><img src="images/logos/metofficegovuk_md.png" class='footermetlogo'></a>
