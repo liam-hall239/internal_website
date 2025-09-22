@@ -5,40 +5,70 @@
     <link rel="icon" href="images/logos/mo-favicon.png" type="image/x-icon" sizes="any">
     <meta name="description" content="Global Evaluation Suites for Liam Hall" />
     <meta name="keywords" content="Liam Hall, Global Evaluation Suites" />
-    <style type="text/css">
-      body          {margin: 0;}
-      html          {font-family: arial, helvetica, "sans-serif";}
-      #logo, #links {float: right; padding: 0; margin: 0; margin-left: 25px;}
-      #links        {padding: 5px 7px; margin: 0 7px; border: 2px #B9DC0C solid; max-width: 350px; border-radius: 4px; box-shadow: 5px 5px 5px 0px #CCCCCC;}
-      #links h2     {padding: 0; margin: 0; font-size: 1.2em;}
-      #links ul     {padding-top: 0; margin-top: 0; margin-bottom: 0px; margin-left: -15px; font-size: 0.9em;}
-      #logo img     {padding: 0; margin: 0; height: 85px; width: 254px;}
-     .left          {float: left;}
-     .clear         {clear: both;}
-    </style>
     <link rel="stylesheet" href="style.css" type="text/css" />
   </head>
-  <!--Dont delete above-->
   <style>
-    /*Body */
-    body                {font-family: Arial, Helvetica, sans-serif; margin: 0;}
-    .content            {margin-left: 20%; margin-right: 20%; padding: 10px; background-color: #ffffff;}
-    /* Header/Logo Title */
-    .header             {padding: 5px; text-align: center; background: #1a1a1a; color: #ffffff; font-size: 18px; position: relative;}
-    .header img         {position: absolute; top: 50%; transform: translateY(-50%);}
-    .headermetlogo      {left: 10px;}
-    .headerlinkedinlogo {right: 30px;}
     div.gallery         {border: 1px solid #ccc;}
     div.gallery:hover   {border: 1px solid #777;}
     div.gallery img     {width: 100%; height: auto;}
     div.desc            {padding: 5px; text-align: center;}
-    *                   {box-sizing: border-box;}
-    .responsive         {padding: 0 6px; width: 24.99999%; text-align: center; float: left;}
-    @media only screen and (max-width: 700px) {.responsive {width: 49.99999%; margin: 6px 0;}}
-    @media only screen and (max-width: 500px) {.responsive {width: 100%;}}
-    .clearfix:after     { content: ""; display: table; clear: both;}
+    * {box-sizing: border-box;}
+    .gallery-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+      margin: 0 -12px;
+    }
+    .responsive {
+      flex: 1 1 22%;
+      max-width: 24%;
+      min-width: 260px;
+      box-sizing: border-box;
+      padding: 0 12px 24px 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    @media only screen and (max-width: 900px) {
+      .responsive { max-width: 48%; flex-basis: 48%; }
+    }
+    @media only screen and (max-width: 600px) {
+      .responsive { max-width: 100%; flex-basis: 100%; }
+    }
+    .gallery {
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      background: #fafbfc;
+      transition: box-shadow 0.2s, border-color 0.2s;
+      overflow: hidden;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+    .gallery:hover {
+      border: 1.5px solid #1a1a1a;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+    }
+    .gallery img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-bottom: 1px solid #eee;
+      background: #eaeaea;
+    }
+    .desc, .ges-sat-desc {
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 1em;
+      color: #222;
+      background: #fff;
+      border-radius: 0 0 12px 12px;
+      min-height: 48px;
+    }
+    .clearfix:after { content: ""; display: table; clear: both; }
   </style>
-
   <body>
     <div class="header">
       <a href="http://www.metoffice.gov.uk" target="_blank" alt="Met Office Logo" title="Met Office"><img src="images/logos/metofficegovuk_md.png" class='headermetlogo'></a>
@@ -73,105 +103,80 @@
           
       <div>
         <h3>Future Verifications</h3>
-
-        <div class="responsive">
-          <div class="gallery">
-            <a target="_blank" href="https://space.oscar.wmo.int/satellites/view/metop_sg_a1">
-              <img src="images/satellites/metop-sg-a1.jpg" alt="Metop-SG A1 satellite" width="600" height="400">
-            </a>
-            <div class="desc">
-              Metop-SG A1 - ticket <a href="#" target="_blank">#TBD</a> (Launch: 12th August 2025)
+        <div class="gallery-grid">
+          <div class="responsive">
+            <div class="gallery">
+              <a target="_blank" href="https://space.oscar.wmo.int/satellites/view/metop_sg_a1">
+                <img src="images/satellites/metop-sg-a1.jpg" alt="Metop-SG A1 satellite" width="600" height="400">
+              </a>
+              <div class="desc">
+                Metop-SG A1 - ticket <a href="#" target="_blank">#TBD</a> (Launch: 12th August 2025)
+              </div>
             </div>
           </div>
-        </div>
-          
-        <div class="responsive">
-          <div class="gallery">
-            <a target="_blank" href="https://space.oscar.wmo.int/satellites/view/sentinel_6b">
-              <img src="images/satellites/sentinel-6B.jpg" alt="Sentinel-6B satellite" width="600" height="400">
-            </a>
-            <div class="desc">
-              Sentinel-6B - ticket <a href="#" target="_blank">#TBD</a><br>(Launch: > November 2025)
+          <div class="responsive">
+            <div class="gallery">
+              <a target="_blank" href="https://space.oscar.wmo.int/satellites/view/sentinel_6b">
+                <img src="images/satellites/sentinel-6B.jpeg" alt="Sentinel-6B satellite" width="600" height="400">
+              </a>
+              <div class="desc">
+                Sentinel-6B - ticket <a href="#" target="_blank">#TBD</a><br>(Launch: > November 2025)
+              </div>
+            </div>
+          </div>
+          <div class="responsive">
+            <div class="gallery">
+              <a target="_blank" href="https://space.oscar.wmo.int/satellites/view/fy_3e">
+                <img src="images/satellites/FY-3E.jpg" alt="FY-3E satellite" width="600" height="400">
+              </a>
+              <div class="desc">
+                FY-3E - ticket <a href="#" target="_blank">#TBD</a><br>(Retrial in 2026 - awaiting CMA processing improvements)
+              </div>
             </div>
           </div>
         </div>
       </div>
-         
-      <div style="margin-top: 300px;">
+
+      <div>
         <h3>Completed Verifications</h3>
-        <div class="responsive">
-          <div class="gallery">
-            <a target="_blank" href="https://wwwspice/~liam.hall/GES/FY-3E_verif1/imt/page.html?intro">
-              <img src="images/satellites/FY-3E.jpg" alt="FY-3E satellite" width="600" height="400">
-            </a>
-            <div class="desc">
-              FY-3E verification 1 - ticket <a href="https://code.metoffice.gov.uk/trac/nwpscience/wiki/ticket/1406" target="_blank">#1406</a></div>
+        <div class="gallery-grid">
+          <div class="responsive">
+            <div class="gallery">
+              <a target="_blank" href="https://wwwspice/~liam.hall/GES/FY-3E_verif1/imt/page.html?intro">
+                <img src="images/satellites/FY-3E.jpg" alt="FY-3E satellite" width="600" height="400">
+              </a>
+              <div class="desc">
+                FY-3E verification 1 - ticket <a href="https://code.metoffice.gov.uk/trac/nwpscience/wiki/ticket/1406" target="_blank">#1406</a>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div class="responsive">
-          <div class="gallery">
-            <a target="_blank" href="https://wwwspice/~liam.hall/GES/FY-3E_verif2/imt/page.html?intro">
-              <img src="images/satellites/FY-3E.jpg" alt="FY-3E satellite" width="600" height="400">
-            </a>
-            <div class="desc">
-              FY-3E verification 2 - ticket <a href="https://code.metoffice.gov.uk/trac/nwpscience/wiki/ticket/1406" target="_blank">#1406</a></div>
+          <div class="responsive">
+            <div class="gallery">
+              <a target="_blank" href="https://wwwspice/~liam.hall/GES/FY-3E_verif2/imt/page.html?intro">
+                <img src="images/satellites/FY-3E.jpg" alt="FY-3E satellite" width="600" height="400">
+              </a>
+              <div class="ges-sat-desc">
+                FY-3E verification 2 - ticket <a href="https://code.metoffice.gov.uk/trac/nwpscience/wiki/ticket/1406" target="_blank">#1406</a>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
 
-  <!--Footer-->
-  <style>
-    footer {
-      margin-top: 50px;
-      position: relative;
-      width: 100%;
-      padding: 0px;
-      background-color: #2A2A2A;
-      color: #A1A0AA;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 50px;
-      /* Adjust height as needed */
-    }
-
-    .footer-section {
-      width: 33%;
-      text-align: center;
-    }
-
-    .footer-section.left {
-      width: 33%;
-      text-align: left;
-    }
-
-    .footer-section.right {
-      width: 33%;
-      text-align: right;
-    }
-  </style>
-
-  <body>
+    <!--Footer-->
     <footer>
-      <div class="footer-section left" style="margin-top: center; font-size: 12px; transform: translateX(15px);">
+      <div class="footer-section left">
         Last Modified: 19/09/2025
       </div>
       <div class="footer-section">
         <a href="http://www.metoffice.gov.uk" target="_blank" alt="Met Office Logo" title="Met Office"><img
-            src="images/logos/metofficegovuk_md.png" class='footermetlogo'></a>
+            src="images/logos/metofficegovuk_md.png" class="footermetlogo"></a>
       </div>
-      <div class="footer-section right" style="margin-top: center; font-size: 12px; transform: translateX(-15px);">
+      <div class="footer-section right">
         © Crown Copyright
         <script>document.write(new Date().getFullYear())</script>. Met Office.
       </div>
     </footer>
-
-
   </body>
-
 </html>
