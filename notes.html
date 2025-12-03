@@ -41,10 +41,156 @@
 
   <div class="content" style="margin-left: 100px; margin-right: 100px;">
     <h1>Notes</h1>
-    <p>This page is for my work notes that I want to keep track of for my own benefit. It is not official documentation for others to use and reference since they are very specific to my work, but if it helps, it can be used if you need them.</p>
-    
-    <div>
-      <h2>Desroziers SITH Suite</h2>
+    <p>This page contains my personal work notes, intended primarily for my own reference. While they are specific to my tasks and not official documentation, feel free to use them if you find them helpful.</p>
+
+    <details open>
+      <summary class="dropdown-h2">JEDI Training - 29/09/25</summary>
+      <h3>Introduction to JEDI</h3>
+
+      <p>The rise of new supercomputers using GPUs, exascales and using cloud computing alongside the ever-increasing scientific complexity (i.e. coupled DA, sub-km scale, large number of ensembles) with ever-growing observation networks means that we need to revise this system.</p>
+      <p>We need this new system to be unified across all applications, needs to be versatile, generic, using model agnostics (using toy models to Earth system coupled models) and it needs to be easy to use and future proof - lasting at least 20-30 years. The system needs to have a logical chain of processing applied to the observations with the code being free of any science.</p>
+      <p><strong>JEDI - Joint Effort for Data assimilation Integration</strong> is a collaborative development between JCSDA and its partners to create a unified data assimilation system:
+      <ul>
+        <li>Toy models to Earth system coupled models</li>
+        <li><strong>Unified Observation (forward) Operators (UFO)</strong></li>
+        <li>For research and operations (including Operations to R2O)</li>
+        <li>Share as much as possible without imposing one approach</li>
+        <li>Some relative agnosticity between each elements (OOPS/UFO etc.)</li>
+      </ul></p>
+      <p><strong>OOPS is the Object Oriented Prediction System</strong> which provides a generic, portable, model-agnostic DA system interface. It uses object-oriented and generic programming, a collection of DA algorithms, collection of models predefined abstract interfaces selected at compile time, and the model information are "stored" within ATLAS. The model interface provides the model's information to JEDI. It has one interface per model, it is interchangeable, and fully NWP to toy models.</p>
+      <p><strong>UFO</strong> is a collection of forward operators and a collection of abstract observation filters (QC - Quality Control). The QC is called before and after the forward operators and is exposed to observation values and/or metadata. GeoVaLs are the model values at the observations locations. Observation operators and QC filters.</p>
+      <p><strong>IODA is the Interface for Observation Data Access</strong> - This is in the observation data model containing multipl generic backends including buffr, NetCDF and ODB. File formats and observation data models.</p>
+      <p><strong>SABER is the System Agnostic Background Error Representation</strong>. It is the equivalent of UFO, but it deals with the background error covariance models, which are both static and ensemble-based versions. It explores different formulation for B and the different localisation schemes. This is for the covariance modelling.</p>
+
+  <h3>JEDI Philosophy</h3>
+      <p>JEDI is designed to be modular, with components not needing to know any details of each other (agnostic). It has a common interface, separation of concerns and easy to use and modify using YAML files.</p>
+      <p>Vertical interpolaion example:
+        <ul>
+          <li>Observation data read by IODA - ingests multiple formats (NetCDF, ODB) and stores data in a consistent format.</li>
+          <li>GeoVaLs are produced by the models - precise implementation is model dependent.</li>
+          <li>UFO vertical interpolation operator accepts these observation values and GeoVaLs which produces <strong>H(x)</strong>. There is no knowledge of the model or any initial data format. It configures the operator parameters (e.g. linear vs log-linear).</li>
+        </ul>
+      </p>
+      <p>DA example:
+        <ul>
+          <li>Observation selection</li>
+          <li>Observation error covariances</li>
+          <li>Model resolution</li>
+          <li>Background error covariances</li>
+          <li>Assimilation technique, whether it be 3DVar, 4DVar etc.</li>
+          <li>Inner-loop minimisation algorithm</li>
+          <li>It is easy to configure independently of each other using YAML files.</li>
+        </ul>
+      </p>
+      <h4>How a YAML is configured:</h4>
+      <p>JEDI is controlled by a flexible and modular configuration system. The goal is to reduce the need for writing custom code when setting up and running JEDI in an operational model. YAML has a user-friendly appearance, key-value pair specifications and indentation defines sections (tabs are forbidden which is a common source of errors).</p>
+      <p>Example of YAML syntax:</p>
+      <details>
+        <summary>Scalar</summary>
+        <pre>
+      vehicle: "car" # string
+      wheels:  3     # integer
+      mileage: 123.4 # float
+      is_blue: true  # boolean</pre>
+      </details>
+      <details>
+        <summary>List</summary>
+        <pre>
+      fruits:
+        - apple
+        - banana
+        - orange
+      fruit: [apple, banana, orange]</pre>
+      </details>
+      <details>
+        <summary>Dictionary</summary>
+        <pre>
+      fruit colours:
+        apple:  red
+        banana: yellow
+        orange: orange
+      fruit colours: {apple: red, banana: yellow, orange: orange}</pre>
+      </details>
+      <details>
+        <summary>List of Dictionaries</summary>
+        <pre>
+      food colours:
+        - apple:    red
+          banana:   yellow
+          orange:   orange
+        - broccoli: green
+          carrot:   orange
+          cabbage:  purple</pre>
+      </details>
+      <p>Symbols include: <strong>&</strong> for labelling a section with a name; <strong>*</strong> for repeating named section; <strong><<</strong> for repeating named sections with modifications or additions and <strong>#</strong> for commenting.</p>
+
+      <h4>Why use C++?</h4>
+      <p>We want JEDI to provide an abstract interface layer that separates the state, model, covariances, observation operators etc from their specific implementations. We want to take advantage of many new libraries and capabilities that are availble in other languages. Lastly we want to write fast code that can be implemented in an operational context.</p>
+      <p>A parameter class is used to hold configuration options for a wide variety of classes. There is a link between the code and YAML.</p>
+      <p>Abstract base class where all observations operators inherit a generic base class. It provides a consistent interface that can be used in derived classes. The abstraction hides implementation details from the users.</p>
+      <p>Runtime polymorphism are functions in derived classes that override base class functions. It contains implementations of the pure virtual functions. E.g. <code>class ObsIdentity : public ObsOperatorBase { ...</code> - ObsIdentity inherits from ObsOperatorBase.</p>
+      <p>Compile-time polymorphism handles operator overloading. It provides operators for custom data types. It is more intuitive and can help with function overloading:
+        <pre>
+          void calculate(int, val);
+          void calculate(float, val2);
+          void calculate(float val, int val2);</pre>
+      If you call the <code>calculate</code> function with an integer, the first one will be called, and if you call it with a float, the second one will be called and so on.
+      </p>
+      <p>Templating is a powerful feature in C++ that allows functions and classes to operate with generic types. This means you can write a function or class once and use it with different data types without the need to rewrite code.</p>
+      <P>The C++ Standard Template Library:
+        <ul>
+          <li>Containers</li>
+          <li>Fast algorithms for data searches and manipulation</li>
+          <li>File and console I/O</li>
+          <li>Math functions (random numbers, complex numbers...)</li>
+          <li>Memory management - Smart pointers are safer than 'raw' pointers handling memory on behalf of the user, and less likely to have memory leaks, It is still fine to pass into functions using <strong>*</strong>if you are not concerned with ownership.</li>
+          <li>Strings</li>
+        </ul>
+      </P>
+      <p>Templates in OOPS - OOPS acts as a glue to combine different models and observations together.</p>
+      <p>Traits - When a template is used with a particular class, how should that class behave? This is where traits come into play. Traits allow you to define certain behaviors or characteristics that a class should have when used with a template and are defined using <code>struct</code>. Traits enables much greater flexibility, keeping OOPS code generic as well as being templated themselves.</p>
+
+      <h3>JOPA: Observation Processing</h3>
+      <p>The Unified Forward Operator (UFO) replaces most of the traditional observation processing system (OPS). It includes the observation operators - H(x) - and uses QC filters. We share observation operators between JCSDA partners to reduce duplication of work. They take the model agnostic approach one level down into the observation operators. This is a faster use of new observing platforms where regular satellite missions are expensive, cube-sats have short life expectancies and this way it includes users and instruments from different science teams.</p>
+      <p>GeoVaLs are vertical profiles of requested model variables at locations (x, y, t). The forward operator defines which variable it needs from the model to compute H(x). An example for aircraft/radiosonds - vertical profiles of pressure to do vertical interpolation, t, u, v, q.</p>
+      <p>GNSSRO bending angles following GSI are found in <code>ufo/src/ufo/gnssro/BndGSI</code></p>
+      <p>GNSSRO refractivity following GSI are found in <code>ufo/src/ufo/gnssro/RefGSI</code></p>
+      <p>GNSSRO bending angles for ROPP1D are found in <code>ufo/src/ufo/gnssro/BndROPP1D</code></p>
+      <p>GNSSRO bending angles for ROPP2D are found in <code>ufo/src/ufo/gnssro/BndROPP2D</code></p>
+      
+      <h4>UFO observation filters</h4>
+      <p>Observation filters are called before and after (pre/prior and post respectively) the observation operator. They can flag any obs as rejected, modify obs error estimates and can either write files, creat new ObsSpace variables etc. The obs filters are generic and have access to obs values, estimated errors and metadata. Optionally, they can have access to values of model variables at observation locations (GeoVaLs) and/or simulated observation values and diagnostics. And their own private data. JEDI philosophy is for filters to be as generic and re-usable as possible.</p>
+      <p>Generic observation filters controlled by YAML files and filtered in the order which they appear:</p>
+      <ul>
+        <li>Domain checks - rejecting obs with metadata values outside some bounds</li>
+        <li>RejectList - This is the inverse of ObsDomainCheck: rejects observations with metadata inside some bounds</li>
+        <li>Bounds check - Rejects obs with values outside some bounds</li>
+        <li>Background checks - Rejects obs with values far from their model equivalents</li>
+        <li>Thinning - Reducing the amount of data that we process using random, gaussian, temporal, poisson disk thinning methods...</li>
+      </ul>
+      <p>These filters take an optional where clause to restrict their scope of application, but this is very generic.</p>
+
+      <h3>JADA: Introduction to OOPS</h3>
+      <p>Object Oriented Prediction System is the abstract, model agnostic DA system. It is top level of JEDI that orchestrates the configuration and execution of applications. OOPS contains generic data assimilation algorithms and abstract interfaces. OOPS is independant of the underlying model and physical system.</p>
+      <p>The assimilation algorithms are generic, and contains a variety of DA schemes. All DA methods require the same limited number of entities. For future developments, these entities should be easily resuable. These entities are the basic (abstract) classes that define the system.</p>
+      <h4>The interfaces</h4>
+      <p>Implementations do not know about the high level algorithms. All actions are driven by the top level code and all data, inputs and outputs are passed by arguments. Interfaces must be general enough to cater for all cases and detailed enough to be able to perfom the required actions.</p>
+      <p>An example of OOPS: H(x) application has around 200 lines of code. This runs the model forecast (possibly with pseudo-model reading states from files) from initial conditions for the forcast length. It computes H(x) for specified obs. It can also be used to generate observations for OSSEs.</p>
+
+      <h3>JADA: JEDI and LFRic</h3>
+      <p>JEDI has a set of recipes where the model interface serves JEDI the required ingredients and tools for the implemented applications. LFRic is used as a library in the interface - an in-memory transfer of data. The model interface links this with the rest of the JEDI framework through a defined OOPS interface.</p>
+      <p>OOPS implements model-agnostic applications for performing variational DA, ensemble DA, H(x), applications for DA experiments and running a forecast. Templating allows for each model interface to compile a version of the application which works with a particular model. This requires reading in the model data, timestepping the model, and variable changes to name a few.</p>
+      <p>For example: to get H(x) with LFRic, it uses the YAML configuration with the observations from for example, radiosondes, and the model background to get H(x).</p>
+      
+      <h4>a) Geometry</h4>
+      <p>Concrete implementation of an object describing the mesh. It stores an Atlas mesh and an LFRic mesh. It also stores ancillary fields such as height information, making use of the JEDI-LFRic library within LFRic for information such as model top height.</p>
+      <h4>b) State</h4>
+      <p>Concrete implementation of an object describing the model state. Contains methods to read and write data both from files and between JEDI and the models. </p>
+      <h3>JEDI Workflows and Repositories</h3>
+    </details>
+
+    <details>
+      <summary class="dropdown-h2">Desroziers SITH Suite</summary>
       <p>SITH (Simple Integrated Test Harness for JEDI Applications) is a suite that compares OPS with JOPA. It can be run on a cycling basis which for my case is run monthly.</p>
       <p>Assimilating GNSS-RO data allows us to retrieve the innovations (observations minus background, O-B) and residuals (observations minus analysis,O-A) to be able to estimate the statistical error on the background for these observations. See the <a href="https://github.com/metoffice/ssa-desroziers-2025">ssa-desroziers-2025</a> repository and Desroziers (<a href="https://rmets.onlinelibrary.wiley.com/doi/10.1256/qj.05.108">2005</a>) for more information.</p>
       <p>This is the purpose for these suite changes - to be able to assimilate and plot these error statistics against altitude.</p>
@@ -111,7 +257,7 @@
       <p>Writing <code>PATH=$PATH:/home/users/opsrc/cylc-run/ops-2025.03.0/share/fcm_make_ops_x86_64_ifort_opt//build/bin</code></p>
       <p>then <code>print-varobs --all GPSRO.varobs > varobs.txt</code> both within SPICE. Scrolled through the text file and successfully saw the rising and setting flag in the CallSign.</p>
       <p>When the task <code>glu_var_jopa_anal_low</code> ran successfully, I checked the innovations and residuals on the HPC to see if the column of 1s and 0s were there and success!</p>
-    </div>
+  </details>
   </div>
 
 
@@ -134,7 +280,7 @@
 
   <footer>
         <div class="footer-section left">
-        Last Modified: 22/09/2025
+        Last Modified: 03/11/2025
       </div>
         <div class="footer-section">
             <a href="http://www.metoffice.gov.uk" target="_blank" alt="Met Office Logo" title="Met Office"><img src="images/logos/metofficegovuk_md.png" class='footermetlogo'></a>
@@ -144,4 +290,4 @@
         </div>
     </footer>
   </body>
-  </html>
+</html>
