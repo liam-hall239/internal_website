@@ -1,22 +1,55 @@
-/* Dropdown h2 summary styling */
-.dropdown-h2 {
-    font-size: 1.5em;
+.costcode-dot {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    border: 2px solid #eee;
+}
+.costcode-dot.costcode-RNGRAS { background: #B9DC0C; border-color: #B9DC0C; }
+.costcode-dot.costcode-RNWSSA { background: #007AA9; border-color: #007AA9; }
+.costcode-dot.costcode-XXXX02 { background: #A1A0AA; border-color: #A1A0AA; }
+.costcode-dot.costcode-XXXX03 { background: #E47452; border-color: #E47452; }
+.costcode-dot.costcode-XXXX05 { background: #50B9A4; border-color: #50B9A4; }
+.costcode-dot.costcode-XXXX07 { background: #2A2A2A; border-color: #2A2A2A; }
+.costcode-dot.costcode-XXXX09 { background: #fff; border-color: #007AA9; }
+
+.costcode-dot {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    border: 2px solid #eee;
+}
+.costcode-dot.costcode-RNGRAS { background: #B9DC0C; border-color: #B9DC0C; }
+.costcode-dot.costcode-RNWSSA { background: #007AA9; border-color: #007AA9; }
+.costcode-dot.costcode-XXXX02 { background: #A1A0AA; border-color: #A1A0AA; }
+.costcode-dot.costcode-XXXX03 { background: #E47452; border-color: #E47452; }
+.costcode-dot.costcode-XXXX05 { background: #50B9A4; border-color: #50B9A4; }
+.costcode-dot.costcode-XXXX07 { background: #2A2A2A; border-color: #2A2A2A; }
+.costcode-dot.costcode-XXXX09 { background: #fff; border-color: #007AA9; }
+.costcode-legend {
+    display: inline-block;
+    margin-right: 12px;
+    padding: 3px 10px;
+    border-radius: 8px;
     font-weight: bold;
-    }
-html {
-    font-family: arial, helvetica, "sans-serif";
+    font-size: 1em;
 }
-
-#logo, #links {
-    float: right;
-    border-radius: 4px;
-    box-shadow: 5px 5px 5px 0px #CCCCCC;
-}
-
-#links h2 {
-    padding: 0;
-    margin: 0;
-    font-size: 1.2em;
+.costcode-RNGRAS { background: #B9DC0C; color: #2A2A2A; }
+.costcode-RNWSSA { background: #007AA9; color: #fff; }
+.costcode-XXXX02 { background: #A1A0AA; color: #2A2A2A; }
+.costcode-XXXX03 { background: #E47452; color: #fff; }
+.costcode-XXXX05 { background: #50B9A4; color: #fff; }
+.costcode-XXXX07 { background: #2A2A2A; color: #B9DC0C; }
+.costcode-XXXX09 { background: #fff; color: #007AA9; border: 1px solid #007AA9; }
+.costcode-entry {
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-weight: 500;
 }
 
 #links ul {
@@ -223,3 +256,5 @@ Summer Blue = {color: '#007AA9';}
 Autumn Orange = {color: '#E47452';}
 Winter Grey = {color: '#A1A0AA';}
 */
+
+
