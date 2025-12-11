@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Personal Dashboard - Liam Hall</title>
+		<link rel="icon" href="images/logos/mo-favicon.png" type="image/x-icon" sizes="any">
+		<meta name="description" content="Personal dashboard for Liam Hall" />
+		<meta name="keywords" content="Liam Hall, dashboard, cost codes, hours, todo" />
+		<link rel="stylesheet" href="style.css" type="text/css" />
+	</head>
+	<body>
+		<div class="header">
+			<a href="http://www.metoffice.gov.uk" target="_blank" alt="Met Office Logo" title="Met Office"><img src="images/logos/metofficegovuk_md.png" class='headermetlogo'></a>
+			<h1>Personal Dashboard</h1>
+		</div>
+		<nav class="navbar">
+			<ul>
+				<li><a href="home.html"><img src="images/icons/home-icon.png" width="20px"></a></li>
+				<li><a href="GES.html">Global Evaluation Suites</a></li>
+				<li><a href="reading_list.html">Reading List</a></li>
+				<li><a href="hobbies.html">Hobbies</a></li>
+				<li><a href="notes.html">Work Notes</a></li>
+			</ul>
+		</nav>
+		<div class="content">
+			<h2>Work Log</h2>
+            <p>For personal use only, by Liam Hall. Please do not edit the entries as this is a way for me to track my hours, thank you.</p>
+			<!-- Modal for adding work log entry -->
+			<div id="workLogModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);z-index:1000;align-items:center;justify-content:center;">
+				<div style="background:#fff;padding:30px 25px;border-radius:12px;box-shadow:0 2px 16px #333;min-width:320px;max-width:90vw;">
+					<h3>Add Work Log Entry</h3>
+					<form id="modalWorkLogForm">
+						<label for="modalCostCode">Cost Code:</label>
+						<select id="modalCostCode" required>
+							<option value="RNGRAS">RNGRAS - EUMETSAT Contract</option>
+							<option value="RNWSSA">RNWSSA - Satellite and Surface Assimilation</option>
+							<option value="XXXX02">XXXX02 - Leave/Sickness</option>
+							<option value="XXXX03">XXXX03 - Performance Review Process</option>
+							<option value="XXXX05">XXXX05 - Training and Development</option>
+							<option value="XXXX07">XXXX07 - Team Activity</option>
+							<option value="XXXX09">XXXX09 - Admin</option>
+						</select><br>
+						<label for="modalHours">Hours Worked:</label>
+						<input type="number" id="modalHours" min="0" step="0.25" required><br>
+						<input type="hidden" id="modalWorkDate">
+						<div style="margin-top:10px;">
+							<button type="submit">Add Entry</button>
+							<button type="button" onclick="closeWorkLogModal()" style="margin-left:10px;">Cancel</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div style="display:flex;align-items:center;justify-content:center;margin-top:30px;">
+				<button id="prevMonthBtn" style="margin-right:10px;">&#8592; Prev</button>
+				<div id="calendarMonthLabel" style="font-weight:bold;font-size:1.3em;"></div>
+				<button id="nextMonthBtn" style="margin-left:10px;">Next &#8594;</button>
+			</div>
+			   <div id="calendarContainer" style="margin-top:10px;"></div>
+
+			   <div style="display:flex;gap:32px;justify-content:center;align-items:flex-start;margin-top:20px;flex-wrap:wrap;">
+				   <div id="totals" style="min-width:260px;max-width:380px;padding:12px 22px;background:#f8f8f8;border-radius:10px;box-shadow:0 2px 8px #eee;">
+						   <strong>Totals:</strong>
+						   <div id="weekTotal"></div>
+						   <div id="monthTotal"></div>
+						   <div id="rngrasTotal"></div>
+						   <div id="rnwssaTotal"></div>
+					   </div>
+				   <div id="costCodeLegendCol" style="min-width:260px;max-width:380px;width:100%;padding:12px 22px;background:#f8f8f8;border-radius:10px;box-shadow:0 2px 8px #eee;">
+					   <!-- Cost Code Legend -->
+					   <strong>Cost Code Legend:</strong>
+					   <ul style="list-style:none;padding-left:0;margin-top:8px;">
+						   <li style="margin-bottom:14px;"><span class="costcode-dot costcode-RNGRAS"></span> <span style="background:#B9DC0C;color:#2A2A2A;padding:2px 8px;border-radius:6px;">RNGRAS</span> - EUMETSAT Contract</li>
+						   <li style="margin-bottom:14px;"><span class="costcode-dot costcode-RNWSSA"></span> <span style="background:#007AA9;color:#fff;padding:2px 8px;border-radius:6px;">RNWSSA</span> - SSA</li>
+						   <li style="margin-bottom:14px;"><span class="costcode-dot costcode-XXXX02"></span> <span style="background:#A1A0AA;color:#2A2A2A;padding:2px 8px;border-radius:6px;">XXXX02</span> - Leave/Sickness</li>
+						   <li style="margin-bottom:14px;"><span class="costcode-dot costcode-XXXX03"></span> <span style="background:#E47452;color:#fff;padding:2px 8px;border-radius:6px;">XXXX03</span> - Performance Review Process</li>
+						   <li style="margin-bottom:14px;"><span class="costcode-dot costcode-XXXX05"></span> <span style="background:#50B9A4;color:#fff;padding:2px 8px;border-radius:6px;">XXXX05</span> - Training and Development</li>
+						   <li style="margin-bottom:14px;"><span class="costcode-dot costcode-XXXX07"></span> <span style="background:#2A2A2A;color:#B9DC0C;padding:2px 8px;border-radius:6px;">XXXX07</span> - Team Activity</li>
+						   <li><span class="costcode-dot costcode-XXXX09"></span> <span style="background:#fff;color:#007AA9;border:1px solid #007AA9;padding:2px 8px;border-radius:6px;">XXXX09</span> - Admin</li>
+					   </ul>
+				   </div>
+			   </div>
+
+			   <h2 style="margin-top:40px;">To Do List</h2>
+			   <form id="todoForm" onsubmit="addTodo(event)" style="display:flex;gap:10px;align-items:center;margin-bottom:18px;">
+				   <input type="text" id="todoInput" placeholder="Add a new task..." required style="flex:1;padding:8px 12px;border-radius:6px;border:1px solid #ccc;font-size:1em;">
+				   <button type="submit" style="padding:8px 18px;border-radius:6px;background:#007AA9;color:#fff;border:none;font-weight:bold;">Add</button>
+			   </form>
+			   <ul id="todoList" style="list-style:none;padding-left:0;margin-top:15px;"></ul>
+			   <div id="archiveSection" style="margin-top:30px;">
+				   <h3 style="font-size:1.1em;color:#888;margin-bottom:10px;">Archived Tasks</h3>
+				   <ul id="archiveList" style="list-style:none;padding-left:0;"></ul>
+			   </div>
+		</div>
+
+		<button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">&#8679;</button>
+		<script>
+
+
+
+
+		// Calendar Work Log logic
+		let workEntries = [];
+		let calendarYear = (new Date()).getFullYear();
+		let calendarMonth = (new Date()).getMonth();
+
+		// Load entries from localStorage
+		function loadWorkEntries() {
+			try {
+				const data = localStorage.getItem('workEntries');
+				if (data) {
+					workEntries = JSON.parse(data);
+				}
+			} catch (e) { workEntries = []; }
+		}
+
+		// Save entries to localStorage
+		function saveWorkEntries() {
+			localStorage.setItem('workEntries', JSON.stringify(workEntries));
+		}
+
+		function openWorkLogModal(dateStr) {
+			document.getElementById('workLogModal').style.display = 'flex';
+			document.getElementById('modalWorkDate').value = dateStr;
+		}
+
+		function closeWorkLogModal() {
+			document.getElementById('workLogModal').style.display = 'none';
+			document.getElementById('modalWorkLogForm').reset();
+		}
+
+		document.getElementById('modalWorkLogForm').onsubmit = function(e) {
+			e.preventDefault();
+			const code = document.getElementById('modalCostCode').value;
+			const codeText = document.getElementById('modalCostCode').options[document.getElementById('modalCostCode').selectedIndex].text;
+			const hours = document.getElementById('modalHours').value;
+			const date = document.getElementById('modalWorkDate').value;
+			if (!code || !hours || !date) return;
+			workEntries.push({ code, codeText, hours: parseFloat(hours), date });
+			saveWorkEntries();
+			closeWorkLogModal();
+			// If entry is for a different month, jump to that month
+			const entryDate = parseDate(date);
+			calendarYear = entryDate.getFullYear();
+			calendarMonth = entryDate.getMonth();
+			renderCalendar();
+			updateTotals();
+		}
+
+		function removeEntry(idx) {
+			workEntries.splice(idx, 1);
+			saveWorkEntries();
+			renderCalendar();
+			updateTotals();
+		}
+
+		function renderCalendar() {
+			const year = calendarYear;
+			const month = calendarMonth;
+			const firstDay = new Date(year, month, 1);
+			const lastDay = new Date(year, month + 1, 0);
+			const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; // Monday start
+			// Month label
+			const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+			document.getElementById('calendarMonthLabel').textContent = `${monthNames[month]} ${year}`;
+			// Bigger calendar
+			let html = '<div style="overflow-x:auto;"><table style="width:100%;max-width:800px;height:48vh;font-size:0.95em;border-collapse:collapse;text-align:center;margin:auto;">';
+			html += '<thead><tr style="background:#f0f0f0;font-size:1.1em;"><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr></thead><tbody>';
+			let day = 1 - startDay;
+			for (let w = 0; w < 6; w++) {
+				html += '<tr>';
+				for (let d = 0; d < 7; d++, day++) {
+					if (day < 1 || day > lastDay.getDate()) {
+						html += '<td style="background:#fafafa;"></td>';
+					} else {
+						const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+						const entries = workEntries.map((e, idx) => ({...e, idx})).filter(e => e.date === dateStr);
+						html += `<td style="vertical-align:top;min-width:60px;min-height:60px;border:1.5px solid #eee;cursor:pointer;" onclick="openWorkLogModal('${dateStr}')">`;
+						html += `<div style='font-weight:bold;font-size:1em;'>${day}</div>`;
+						if (entries.length) {
+							html += '<ul style="list-style:none;padding-left:0;font-size:1em;">';
+							// Cost code colour map
+							const codeColours = {
+								RNGRAS: {bg: '#B9DC0C', color: '#2A2A2A'},
+								RNWSSA: {bg: '#007AA9', color: '#fff'},
+								XXXX02: {bg: '#A1A0AA', color: '#2A2A2A'},
+								XXXX03: {bg: '#E47452', color: '#fff'},
+								XXXX05: {bg: '#50B9A4', color: '#fff'},
+								XXXX07: {bg: '#2A2A2A', color: '#B9DC0C'},
+								XXXX09: {bg: '#fff', color: '#007AA9', border: '1px solid #007AA9'},
+							};
+							entries.forEach(e => {
+								const style = codeColours[e.code] ?
+									`background:${codeColours[e.code].bg};color:${codeColours[e.code].color};${codeColours[e.code].border ? 'border:' + codeColours[e.code].border + ';' : ''}padding:2px 8px;border-radius:6px;display:inline-block;min-width:38px;text-align:center;` : '';
+								html += `<li><span class='costcode-entry' style="${style};display:inline-flex;align-items:center;gap:4px;">${parseFloat(e.hours).toFixed(2)}<button style='background:none;border:none;padding:0;margin-left:4px;font-size:1em;line-height:1;cursor:pointer;color:#888;' title='Remove' onclick='removeEntry(${e.idx});event.stopPropagation();'>×</button></span></li>`;
+									function removeEntry(idx) {
+										workEntries.splice(idx, 1);
+										saveWorkEntries();
+										renderCalendar();
+										updateTotals();
+									}
+							});
+							html += '</ul>';
+							const total = entries.reduce((sum, e) => sum + e.hours, 0);
+							// Colour the total by the first entry's code if present
+							const totalCode = entries[0]?.code || '';
+							html += `<div class='costcode-entry costcode-${totalCode}' style='font-size:1em;'>Total: ${total}h</div>`;
+						}
+						html += '</td>';
+					}
+				}
+				html += '</tr>';
+				if (day > lastDay.getDate()) break;
+			}
+			html += '</tbody></table></div>';
+			document.getElementById('calendarContainer').innerHTML = html;
+		}
+
+		function parseDate(str) {
+			const [y, m, d] = str.split('-');
+			return new Date(Number(y), Number(m)-1, Number(d));
+		}
+
+		function getWeekStart(date) {
+			const d = new Date(date);
+			const day = d.getDay();
+			// Monday is 1, Sunday is 0
+			const mondayOffset = (day === 0 ? -6 : 1 - day);
+			d.setDate(d.getDate() + mondayOffset);
+			return d;
+		}
+
+		function updateTotals() {
+			// Month and cost code breakdown for displayed calendar month
+			const year = calendarYear;
+			const month = calendarMonth;
+			let monthTotal = 0;
+			let costCodeTotals = {};
+			workEntries.forEach(e => {
+				const code = e.code;
+				const hours = e.hours;
+				const date = parseDate(e.date);
+				if (date.getFullYear() === year && date.getMonth() === month) {
+					monthTotal += hours;
+					if (!costCodeTotals[code]) costCodeTotals[code] = 0;
+					costCodeTotals[code] += hours;
+				}
+            });
+                        // Calculate this week's total (for displayed calendar month)
+                        const today = new Date();
+                        let weekStart = getWeekStart(new Date(today.getFullYear(), today.getMonth(), today.getDate() - ((today.getDay() === 0 ? 6 : today.getDay() - 1))));
+                        let weekEnd = new Date(weekStart);
+                        weekEnd.setDate(weekEnd.getDate() + 6);
+                        let weekTotal = 0;
+                        workEntries.forEach(e => {
+                            const date = parseDate(e.date);
+                            if (date >= weekStart && date <= weekEnd && date.getMonth() === month && date.getFullYear() === year) {
+                                weekTotal += e.hours;
+                            }
+			});
+			document.getElementById('weekTotal').textContent = `This week: ${weekTotal.toFixed(2)} hours`;
+			// Only show the week total, no cost code breakdown
+			document.getElementById('monthTotal').textContent = `This month: ${monthTotal.toFixed(2)} hours`;
+			    // RNGRAS and RNWSSA with percentage of 108*split
+			    const rngras = costCodeTotals['RNGRAS'] || 0;
+			    const rnssa = costCodeTotals['RNWSSA'] || 0;
+			    const rngrasTarget = 108 * 0.6;
+			    const rnwssaTarget = 108 * 0.4;
+			    const rngrasPercent = ((rngras/rngrasTarget)*100).toFixed(1);
+			    const rnwssaPercent = ((rnssa/rnwssaTarget)*100).toFixed(1);
+			    document.getElementById('rngrasTotal').innerHTML = `RNGRAS: <b>${rngras.toFixed(2)}h</b> (${rngrasPercent}% of ${rngrasTarget}h)`;
+			    document.getElementById('rnwssaTotal').innerHTML = `RNWSSA: <b>${rnssa.toFixed(2)}h</b> (${rnwssaPercent}% of ${rnwssaTarget}h)`;
+		}
+
+		// Initial render
+		document.addEventListener('DOMContentLoaded', function() {
+			loadWorkEntries();
+			renderCalendar();
+			updateTotals();
+			document.getElementById('prevMonthBtn').onclick = function() {
+				calendarMonth--;
+				if (calendarMonth < 0) {
+					calendarMonth = 11;
+					calendarYear--;
+				}
+				renderCalendar();
+				updateTotals();
+			};
+			document.getElementById('nextMonthBtn').onclick = function() {
+				calendarMonth++;
+				if (calendarMonth > 11) {
+					calendarMonth = 0;
+					calendarYear++;
+				}
+				renderCalendar();
+				updateTotals();
+			};
+		});
+
+
+		// Fancy To Do List logic with archive and date stamp
+		let todos = [];
+		let archivedTodos = [];
+
+		function addTodo(e) {
+			e.preventDefault();
+			const input = document.getElementById('todoInput');
+			const text = input.value.trim();
+			if (!text) return;
+			const date = new Date();
+			const dateStr = date.toISOString().slice(0, 10);
+			todos.push({ text, date: dateStr });
+			input.value = '';
+			saveTodos();
+			renderTodos();
+		}
+
+		function archiveTodo(idx) {
+			const todo = todos.splice(idx, 1)[0];
+			archivedTodos.unshift(todo);
+			saveTodos();
+			renderTodos();
+		}
+
+		function renderTodos() {
+			const todoList = document.getElementById('todoList');
+			todoList.innerHTML = '';
+			todos.forEach((todo, idx) => {
+				const li = document.createElement('li');
+				li.style = 'margin-bottom:12px;padding:10px 14px;background:#f6faff;border-radius:8px;box-shadow:0 1px 4px #eee;display:flex;align-items:center;gap:12px;';
+				li.innerHTML = `<input type='checkbox' style='width:20px;height:20px;cursor:pointer;' onchange='archiveTodo(${idx})'> <span style='flex:1;font-size:1.08em;'>${todo.text}</span> <span style='color:#888;font-size:0.95em;margin-left:10px;'>${todo.date}</span>`;
+				todoList.appendChild(li);
+			});
+			renderArchive();
+		}
+
+		function removeArchived(idx) {
+			archivedTodos.splice(idx, 1);
+			saveTodos();
+			renderArchive();
+		}
+
+		function renderArchive() {
+			const archiveList = document.getElementById('archiveList');
+			archiveList.innerHTML = '';
+			archivedTodos.forEach((todo, idx) => {
+				const li = document.createElement('li');
+				li.style = 'margin-bottom:10px;padding:10px 14px;background:#f8f8f8;border-radius:8px;box-shadow:0 1px 4px #eee;display:flex;align-items:center;gap:12px;';
+				li.innerHTML = `<input type='checkbox' checked disabled style='width:20px;height:20px;'> <span style='flex:1;font-size:1.08em;text-decoration:line-through;color:#A1A0AA;'>${todo.text}</span> <span style='color:#888;font-size:0.95em;margin-left:10px;'>${todo.date}</span> <span style='color:#E47452;font-size:0.95em;cursor:pointer;margin-left:10px;' onclick='removeArchived(${idx})'>remove</span>`;
+				archiveList.appendChild(li);
+			});
+		}
+
+		function saveTodos() {
+			localStorage.setItem('todos', JSON.stringify(todos));
+			localStorage.setItem('archivedTodos', JSON.stringify(archivedTodos));
+		}
+
+		function loadTodos() {
+			try {
+				const t = localStorage.getItem('todos');
+				const a = localStorage.getItem('archivedTodos');
+				todos = t ? JSON.parse(t) : [];
+				archivedTodos = a ? JSON.parse(a) : [];
+			} catch (e) {
+				todos = [];
+				archivedTodos = [];
+			}
+		}
+
+		// Initial To Do List render
+		document.addEventListener('DOMContentLoaded', function() {
+			// ...existing code...
+			loadTodos();
+			renderTodos();
+		});
+
+		// Scroll to top button logic
+		window.onscroll = function() {scrollFunction()};
+		function scrollFunction() {
+			var btn = document.getElementById("scrollTopBtn");
+			if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+				btn.style.display = "block";
+			} else {
+				btn.style.display = "none";
+			}
+		}
+		function scrollToTop() {
+			window.scrollTo({top: 0, behavior: 'smooth'});
+		}
+		</script>
+		<footer>
+			<div class="footer-section left">
+				Last Modified: 11/12/2025
+			</div>
+			<div class="footer-section">
+				<a href="http://www.metoffice.gov.uk" target="_blank" alt="Met Office Logo" title="Met Office"><img src="images/logos/metofficegovuk_md.png" class='footermetlogo'></a>
+			</div>
+			<div class="footer-section right">
+				© Crown Copyright <script>document.write(new Date().getFullYear())</script>. Met Office.
+			</div>
+		</footer>
+	</body>
+</html>
